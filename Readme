@@ -1,4 +1,4 @@
-# Django Multiple Database Project (MySQL & PostgreSQL)
+# 🏆 **DJANGO MULTIPLE DATABASE PROJECT (MYSQL & POSTGRESQL)**
 
 This project is a **Django-based API** that utilizes **two databases**:
 - **MySQL** → Used for **Write Operations** (Primary database).
@@ -10,7 +10,7 @@ This project is fully containerized using **Docker Compose**.
 
 ---
 
-## **Project Functionality**
+## 🌟 **Project Functionality**
 ### ✅ **1. API with Django REST Framework (DRF)**
 - Users can create new records via an API endpoint.
 - When a new record is added, it is first stored in **MySQL**.
@@ -39,19 +39,7 @@ This project is fully containerized using **Docker Compose**.
 
 ---
 
-## **Features**
-- ✅ **MySQL for Writes, PostgreSQL for Reads**
-- ✅ **Django REST Framework (DRF) for API**
-- ✅ **Celery + Celery Beat for background tasks**
-- ✅ **Flower UI for Celery Monitoring**
-- ✅ **phpMyAdmin & pgAdmin for Database Management**
-- ✅ **Gunicorn as WSGI Server**
-- ✅ **Redis as Celery Broker**
-- ✅ **Docker Compose for Container Management**
-
----
-
-## **How It Works**
+## 🚀 **How It Works**
 ### 1️⃣ **User Sends `POST /records/create/`**
 - Saves the record in **MySQL** (default write database).
 - Triggers a **Celery task** to copy the record to **PostgreSQL** (read database).
@@ -67,7 +55,7 @@ This project is fully containerized using **Docker Compose**.
 
 ---
 
-## **Services & Ports**
+## 🔗 **Services & Ports**
 | Service       | URL                          | Credentials |
 |--------------|------------------------------|------------|
 | **Django API** | [http://localhost:8000](http://localhost:8000) | N/A |
@@ -77,7 +65,7 @@ This project is fully containerized using **Docker Compose**.
 
 ---
 
-## **Setup Instructions**
+## 🛠️ **Setup Instructions**
 ### **1️⃣ Clone the Repository**
 ```sh
 git clone <your-repo-url>
@@ -93,18 +81,35 @@ Run the script to build and start all services:
 
 ---
 
-## **Manual Steps (If Needed)**
+## 🔧 **Manual Steps (If Needed)**
 ### **1️⃣ Build & Start Docker Containers**
 ```sh
 docker-compose down -v
 docker-compose up --build -d
 ```
 
-### **2️⃣ Run Migrations**
+### **2️⃣ 🚀 Running Migrations (After All Containers Are Up)**
+Once all containers are running, follow these steps:
+
+1️⃣ **Access the Django Service Container**
 ```sh
-docker-compose exec web python manage.py makemigrations
-docker-compose exec web python manage.py migrate
+docker-compose exec web bash
 ```
+
+2️⃣ **Run Migrations for All Databases**
+```sh
+python manage.py makemigrations
+python manage.py migrate --database=default  # Apply migrations to MySQL (Primary DB)
+python manage.py migrate --database=read_db  # Apply migrations to PostgreSQL (Read DB)
+```
+
+💡 **Note:**  
+- `default` → Refers to **MySQL** (write operations).
+- `read_db` → Refers to **PostgreSQL** (read operations).
+
+✅ **Now your databases are fully set up and synchronized!** 🚀
+
+---
 
 ### **3️⃣ Create Django Superuser (Optional)**
 ```sh
@@ -125,7 +130,7 @@ docker-compose restart flower
 
 ---
 
-## **Project Structure**
+## 📁 **Project Structure**
 ```
 djangoMultipleDatabase/
 ├── Dockerfile
@@ -148,7 +153,7 @@ djangoMultipleDatabase/
 
 ---
 
-## **Celery Task Flow**
+## ⚡ **Celery Task Flow**
 1️⃣ **Django API writes data** → **Stored in MySQL**  
 2️⃣ **Celery Worker detects new data** → **Syncs it to PostgreSQL**  
 3️⃣ **Celery Beat periodically checks & fixes unsynced records**  
@@ -156,7 +161,7 @@ djangoMultipleDatabase/
 
 ---
 
-## **Troubleshooting**
+## 🔥 **Troubleshooting**
 ### ❌ **Port Already in Use?**
 Run:
 ```sh
@@ -177,11 +182,11 @@ Use **root** credentials:
 
 ---
 
-## **Contributors**
+## 👨‍💻 **Contributors**
 - **Your Name** - Mohd Sakib 🚀  
 
 For any issues, feel free to create an **Issue** or **Pull Request**!
 
 ---
 
-💡 **Enjoy Coding!** 🚀
+💡 **Happy Coding!** 🚀
