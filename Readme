@@ -51,6 +51,22 @@ This project is fully containerized using **Docker Compose**.
 
 ---
 
+## **How It Works**
+### 1️⃣ **User Sends `POST /records/create/`**
+- Saves the record in **MySQL** (default write database).
+- Triggers a **Celery task** to copy the record to **PostgreSQL** (read database).
+
+### 2️⃣ **Celery Worker Detects New Data**
+- Reads the record from **MySQL**.
+- Copies it into **PostgreSQL**.
+- Marks the record as **synced** in **MySQL**.
+
+### 3️⃣ **Celery Beat Periodically Syncs Unsynced Data**
+- Runs every minute to check for records not yet copied to **PostgreSQL**.
+- Ensures **consistency** between MySQL & PostgreSQL.
+
+---
+
 ## **Services & Ports**
 | Service       | URL                          | Credentials |
 |--------------|------------------------------|------------|
@@ -169,23 +185,3 @@ For any issues, feel free to create an **Issue** or **Pull Request**!
 ---
 
 💡 **Enjoy Coding!** 🚀
-
-
-
-
-
-
-🔹 How It Works
-1️⃣ User Sends POST /records/create/
-
-Saves the record in MySQL (default)
-Triggers a Celery task to copy the record to PostgreSQL (read_db)
-2️⃣ Celery Worker Detects New Data
-
-Reads the record from MySQL
-Copies it into PostgreSQL
-Marks the record as synced in MySQL
-3️⃣ Celery Beat Periodically Syncs Unsynced Data
-
-Runs every minute to check for records not yet copied to PostgreSQL
-Ensures consistency between MySQL & PostgreSQL
