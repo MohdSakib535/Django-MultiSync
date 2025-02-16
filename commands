@@ -1,0 +1,20 @@
+To register a PostgreSQL server in pgAdmin (accessible at http://127.0.0.1:5050/browser/), follow these steps:
+
+1. Log in to pgAdmin
+Open http://127.0.0.1:5050/ in your browser.
+Enter the credentials:
+Email: admin@admin.com
+Password: admin
+2. Add a New Server
+In the pgAdmin interface, go to the left panel.
+Right-click on Servers → Click "Create" → "Server".
+3. Configure the Connection
+General Tab
+Name: Give the server a name (e.g., Postgres Docker).
+Connection Tab
+Host name/address: postgres
+(This is the service name in Docker Compose)
+Port: 5432 (As defined in docker-compose.yml, 5433:5432 means the host connects via 5433.)
+Maintenance database: postgres_db (as defined in environment variables)
+Username: admin
+Password: admin@123

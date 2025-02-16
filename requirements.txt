@@ -1,0 +1,8 @@
+Django==4.2
+djangorestframework
+celery==5.3.1
+redis
+mysqlclient
+psycopg2-binary
+gunicorn
+flower==1.2.0

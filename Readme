@@ -1,0 +1,191 @@
+# Django Multiple Database Project (MySQL & PostgreSQL)
+
+This project is a **Django-based API** that utilizes **two databases**:
+- **MySQL** → Used for **Write Operations** (Primary database).
+- **PostgreSQL** → Used for **Read Operations** (Secondary database).
+
+The system ensures **data consistency** between both databases using **Celery**.  
+Whenever a record is written to **MySQL**, a Celery task updates **PostgreSQL**, ensuring the data is synced.  
+This project is fully containerized using **Docker Compose**.
+
+---
+
+## **Project Functionality**
+### ✅ **1. API with Django REST Framework (DRF)**
+- Users can create new records via an API endpoint.
+- When a new record is added, it is first stored in **MySQL**.
+- Read operations fetch data from **PostgreSQL**.
+
+### ✅ **2. Multi-Database Setup**
+- **MySQL** stores primary data (Write DB).
+- **PostgreSQL** serves as a replica for reading (Read DB).
+
+### ✅ **3. Celery & Celery Beat for Data Sync**
+- A **Celery worker** listens for new records in MySQL.
+- The worker triggers a **background task** to copy data into PostgreSQL.
+- A **Sync Status Table** logs the synchronization process.
+
+### ✅ **4. Celery Beat for Periodic Sync**
+- A scheduled Celery task (via **Celery Beat**) runs at regular intervals.
+- It scans for any unsynced records in MySQL and ensures PostgreSQL is up-to-date.
+
+### ✅ **5. Flower UI for Celery Monitoring**
+- **Flower** provides a web UI to monitor Celery tasks.
+- Allows real-time visibility into Celery job execution.
+
+### ✅ **6. Database Management UIs**
+- **phpMyAdmin** → UI for MySQL administration.
+- **pgAdmin** → UI for PostgreSQL administration.
+
+---
+
+## **Features**
+- ✅ **MySQL for Writes, PostgreSQL for Reads**
+- ✅ **Django REST Framework (DRF) for API**
+- ✅ **Celery + Celery Beat for background tasks**
+- ✅ **Flower UI for Celery Monitoring**
+- ✅ **phpMyAdmin & pgAdmin for Database Management**
+- ✅ **Gunicorn as WSGI Server**
+- ✅ **Redis as Celery Broker**
+- ✅ **Docker Compose for Container Management**
+
+---
+
+## **Services & Ports**
+| Service       | URL                          | Credentials |
+|--------------|------------------------------|------------|
+| **Django API** | [http://localhost:8000](http://localhost:8000) | N/A |
+| **phpMyAdmin** (MySQL UI) | [http://localhost:8080](http://localhost:8080) | User: `mysql_user` <br> Password: `mysql_password` |
+| **pgAdmin** (PostgreSQL UI) | [http://localhost:5050](http://localhost:5050) | Email: `admin@admin.com` <br> Password: `admin` |
+| **Flower (Celery Monitoring)** | [http://localhost:5555](http://localhost:5555) | N/A |
+
+---
+
+## **Setup Instructions**
+### **1️⃣ Clone the Repository**
+```sh
+git clone <your-repo-url>
+cd <your-project-folder>
+```
+
+### **2️⃣ Start the Project**
+Run the script to build and start all services:
+```sh
+./readmw.sh
+```
+(If not executable, run: `chmod +x readmw.sh`)
+
+---
+
+## **Manual Steps (If Needed)**
+### **1️⃣ Build & Start Docker Containers**
+```sh
+docker-compose down -v
+docker-compose up --build -d
+```
+
+### **2️⃣ Run Migrations**
+```sh
+docker-compose exec web python manage.py makemigrations
+docker-compose exec web python manage.py migrate
+```
+
+### **3️⃣ Create Django Superuser (Optional)**
+```sh
+docker-compose exec web python manage.py createsuperuser
+```
+
+### **4️⃣ Collect Static Files**
+```sh
+docker-compose exec web python manage.py collectstatic --noinput
+```
+
+### **5️⃣ Restart Celery Services**
+```sh
+docker-compose restart celery_worker
+docker-compose restart celery_beat
+docker-compose restart flower
+```
+
+---
+
+## **Project Structure**
+```
+djangoMultipleDatabase/
+├── Dockerfile
+├── docker-compose.yml
+├── requirements.txt
+├── manage.py
+├── djangoMultipleDatabase/
+│   ├── __init__.py
+│   ├── settings.py
+│   ├── urls.py
+│   ├── wsgi.py
+│   ├── celery.py
+└── myapp/
+    ├── models.py
+    ├── serializers.py
+    ├── views.py
+    ├── tasks.py
+    ├── urls.py
+```
+
+---
+
+## **Celery Task Flow**
+1️⃣ **Django API writes data** → **Stored in MySQL**  
+2️⃣ **Celery Worker detects new data** → **Syncs it to PostgreSQL**  
+3️⃣ **Celery Beat periodically checks & fixes unsynced records**  
+4️⃣ **Flower UI monitors Celery worker status**  
+
+---
+
+## **Troubleshooting**
+### ❌ **Port Already in Use?**
+Run:
+```sh
+sudo lsof -i :PORT_NUMBER
+sudo kill -9 <PID>
+```
+
+### ❌ **Database Connection Issues?**
+Check if services are running:
+```sh
+docker ps
+```
+
+### ❌ **Access Denied in phpMyAdmin?**
+Use **root** credentials:
+- **Username:** `admin@admin.com`
+- **Password:** `admin`
+
+---
+
+## **Contributors**
+- **Your Name** - Mohd Sakib 🚀  
+
+For any issues, feel free to create an **Issue** or **Pull Request**!
+
+---
+
+💡 **Enjoy Coding!** 🚀
+
+
+
+
+
+
+🔹 How It Works
+1️⃣ User Sends POST /records/create/
+
+Saves the record in MySQL (default)
+Triggers a Celery task to copy the record to PostgreSQL (read_db)
+2️⃣ Celery Worker Detects New Data
+
+Reads the record from MySQL
+Copies it into PostgreSQL
+Marks the record as synced in MySQL
+3️⃣ Celery Beat Periodically Syncs Unsynced Data
+
+Runs every minute to check for records not yet copied to PostgreSQL
+Ensures consistency between MySQL & PostgreSQL
