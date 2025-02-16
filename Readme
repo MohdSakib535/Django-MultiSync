@@ -59,7 +59,7 @@ This project is fully containerized using **Docker Compose**.
 | Service       | URL                          | Credentials |
 |--------------|------------------------------|------------|
 | **Django API** | [http://localhost:8000](http://localhost:8000) | N/A |
-| **phpMyAdmin** (MySQL UI) | [http://localhost:8080](http://localhost:8080) | User: `mysql_user` <br> Password: `mysql_password` |
+| **phpMyAdmin** (MySQL UI) | [http://localhost:8080](http://localhost:8080) | User: `admin` <br> Password: `admin@123` |
 | **pgAdmin** (PostgreSQL UI) | [http://localhost:5050](http://localhost:5050) | Email: `admin@admin.com` <br> Password: `admin` |
 | **Flower (Celery Monitoring)** | [http://localhost:5555](http://localhost:5555) | N/A |
 
@@ -116,12 +116,7 @@ python manage.py migrate --database=read_db  # Apply migrations to PostgreSQL (R
 docker-compose exec web python manage.py createsuperuser
 ```
 
-### **4️⃣ Collect Static Files**
-```sh
-docker-compose exec web python manage.py collectstatic --noinput
-```
-
-### **5️⃣ Restart Celery Services**
+### **4️⃣ Restart Celery Services**
 ```sh
 docker-compose restart celery_worker
 docker-compose restart celery_beat
@@ -143,7 +138,7 @@ djangoMultipleDatabase/
 │   ├── urls.py
 │   ├── wsgi.py
 │   ├── celery.py
-└── myapp/
+└── base/
     ├── models.py
     ├── serializers.py
     ├── views.py
